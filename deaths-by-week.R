@@ -98,8 +98,21 @@ pl2 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
           "Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND]") +
   theme_bw()
 
+pl3 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
+              mapping = aes(x = week, y = death.rate, group = year,
+                            colour = y2020, alpha = year)) +
+  geom_line() +
+  scale_colour_brewer(palette = "Paired") +
+  facet_wrap(~ cntry, scales = "free_y") +
+  ggtitle("Death rate by week (per 1,000,000 individuals)",
+          "Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND]") +
+  theme_bw()
+
 ggsave(filename = "dths-by-wk-total.png", plot = pl1, width = 16, height = 9)
 ggsave(filename = "dths-by-wk-total.pdf", plot = pl1, width = 16, height = 9)
 
 ggsave(filename = "dths-by-wk-rate.png", plot = pl2, width = 16, height = 9)
 ggsave(filename = "dths-by-wk-rate.pdf", plot = pl2, width = 16, height = 9)
+
+ggsave(filename = "dths-by-wk-rate-free-y.png", plot = pl3, width = 16, height = 9)
+ggsave(filename = "dths-by-wk-rate-free-y.pdf", plot = pl3, width = 16, height = 9)
