@@ -78,6 +78,8 @@ dat2 <- merge(dat1, cntry[, .(geo = Alpha_2, cntry = Name)],
 
 dat2[is.na(cntry), .N, keyby = .(geo, cntry)]
 
+setorder(dat2, geo, time)
+
 pl1 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
               mapping = aes(x = week, y = values, group = year,
                             colour = y2020, alpha = year)) +
@@ -86,7 +88,7 @@ pl1 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
   scale_colour_brewer(palette = "Paired") +
   facet_wrap(~ cntry, scales = "free_y") +
   ggtitle("Deaths by week (total count)",
-          "Datasource: Eurostat [DEMO_R_MWK_TS]") +
+          paste("Datasource: Eurostat [DEMO_R_MWK_TS], date:", Sys.Date())) +
   theme_bw()
 
 pl2 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
@@ -97,7 +99,8 @@ pl2 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
   scale_colour_brewer(palette = "Paired") +
   facet_wrap(~ cntry) +
   ggtitle("Death rate by week (per 1,000,000 individuals)",
-          "Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND]") +
+          paste("Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND], date:",
+                Sys.Date())) +
   theme_bw()
 
 pl3 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
@@ -108,7 +111,8 @@ pl3 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
   scale_colour_brewer(palette = "Paired") +
   facet_wrap(~ cntry, scales = "free_y") +
   ggtitle("Death rate by week (per 1,000,000 individuals)",
-          "Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND]") +
+          paste("Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND], date:",
+                Sys.Date())) +
   theme_bw()
 
 ggsave(filename = "dths-by-wk-total.png", plot = pl1, width = 16, height = 9)
@@ -116,7 +120,7 @@ ggsave(filename = "dths-by-wk-rate.png", plot = pl2, width = 16, height = 9)
 ggsave(filename = "dths-by-wk-rate-free-y.png", plot = pl3, width = 16, height = 9)
 
 cairo_pdf(filename = "dths-by-wk.pdf", width = 16, height = 9, onefile = TRUE)
-pl1
-pl2
-pl3
+print(pl1)
+print(pl2)
+print(pl3)
 dev.off()
