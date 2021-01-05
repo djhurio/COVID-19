@@ -27,10 +27,13 @@ dat.pop[indic_de == "JAN", .(year, geo, pop = values)]
 
 
 # https://ec.europa.eu/eurostat/web/products-datasets/-/demo_r_mwk_ts
-dat <- get_eurostat(id = "demo_r_mwk_ts")
+dat <- get_eurostat(id = "demo_r_mwk_ts", time_format = "raw")
 setDT(dat)
 
 dat
+
+sapply(dat, class)
+
 dat[, .N, keyby = .(sex)]
 dat[, .N, keyby = .(unit)]
 
@@ -80,13 +83,22 @@ dat2[is.na(cntry), .N, keyby = .(geo, cntry)]
 
 setorder(dat2, geo, time)
 
-last_obs <- dat2[, max(as.character(time))]
-cat(last_obs)
+dat2[order(time)]
+dat2[geo == "LV"][order(time)]
 
-pl1 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
+dat2[time == max(time)]
+
+# Filter total and !AD
+dat3 <- dat2[sex == "T" & geo != "AD"]
+
+last_obs <- dat3[, max(time)]
+cat(last_obs, "\n")
+
+pl1 <- ggplot(data = dat3,
               mapping = aes(x = week, y = values, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
+  geom_point(data = dat3[year == 2020], shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
@@ -97,10 +109,11 @@ pl1 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
                 "date:", Sys.Date())) +
   theme_bw()
 
-pl2 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
+pl2 <- ggplot(data = dat3,
               mapping = aes(x = week, y = death.rate, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
+  geom_point(data = dat3[year == 2020], shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
@@ -111,10 +124,11 @@ pl2 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
                 "date:", Sys.Date())) +
   theme_bw()
 
-pl3 <- ggplot(data = dat2[sex == "T" & geo != "AD"],
+pl3 <- ggplot(data = dat3,
               mapping = aes(x = week, y = death.rate, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
+  geom_point(data = dat3[year == 2020], shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
@@ -137,3 +151,5 @@ print(pl1)
 print(pl2)
 print(pl3)
 dev.off()
+
+fwrite(x = dat3, file = "data.csv")
