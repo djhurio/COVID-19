@@ -59,7 +59,8 @@ dat[week > 52]
 dat[grepl("W99", time)]
 dat <- dat[!grepl("W99", time)]
 
-dat[, y2020 := factor(as.integer(year == 2020L), 0:1, c("Y<2020", "Y=2020"))]
+dat[, y2020 := factor(x = ifelse(year < 2020L, 0, year - 2019L),
+                      levels = 0:2, labels = c("Y<2020", "Y=2020", "Y=2021"))]
 dat[, .N, keyby = .(y2020)]
 
 
@@ -98,7 +99,7 @@ pl1 <- ggplot(data = dat3,
               mapping = aes(x = week, y = values, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
-  geom_point(data = dat3[year == 2020], shape = 20) +
+  geom_point(data = dat3[year >= 2020], shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
@@ -109,11 +110,12 @@ pl1 <- ggplot(data = dat3,
                 "date:", Sys.Date())) +
   theme_bw()
 
-pl2 <- ggplot(data = dat3,
+pl2 <- ggplot(data = dat3[year <= dat.pop[, max(year)]],
               mapping = aes(x = week, y = death.rate, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
-  geom_point(data = dat3[year == 2020], shape = 20) +
+  geom_point(data = dat3[year >= 2020 & year <= dat.pop[, max(year)]],
+             shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
@@ -124,11 +126,12 @@ pl2 <- ggplot(data = dat3,
                 "date:", Sys.Date())) +
   theme_bw()
 
-pl3 <- ggplot(data = dat3,
+pl3 <- ggplot(data = dat3[year <= dat.pop[, max(year)]],
               mapping = aes(x = week, y = death.rate, group = year,
                             colour = y2020, alpha = year)) +
   geom_line() +
-  geom_point(data = dat3[year == 2020], shape = 20) +
+  geom_point(data = dat3[year >= 2020 & year <= dat.pop[, max(year)]],
+             shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
   scale_colour_brewer(palette = "Paired") +
