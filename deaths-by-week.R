@@ -102,7 +102,7 @@ pl1 <- ggplot(data = dat3,
   geom_point(data = dat3[year >= 2020], shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
-  scale_colour_brewer(palette = "Paired") +
+  # scale_colour_brewer(palette = "Dark2") +
   facet_wrap(~ cntry, scales = "free_y") +
   ggtitle("Deaths by week (total count)",
           paste("Datasource: Eurostat [DEMO_R_MWK_TS],",
@@ -118,7 +118,7 @@ pl2 <- ggplot(data = dat3[year <= dat.pop[, max(year)]],
              shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
-  scale_colour_brewer(palette = "Paired") +
+  # scale_colour_brewer(palette = "Paired") +
   facet_wrap(~ cntry) +
   ggtitle("Death rate by week (per 1,000,000 individuals)",
           paste("Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND],",
@@ -134,7 +134,7 @@ pl3 <- ggplot(data = dat3[year <= dat.pop[, max(year)]],
              shape = 20) +
   geom_vline(xintercept = 13 * 1:4, colour = "red", alpha = .2) +
   scale_x_continuous(breaks = 13 * 1:4, minor_breaks = 1:53) +
-  scale_colour_brewer(palette = "Paired") +
+  # scale_colour_brewer(palette = "Paired") +
   facet_wrap(~ cntry, scales = "free_y") +
   ggtitle("Death rate by week (per 1,000,000 individuals)",
           paste("Datasource: Eurostat [DEMO_R_MWK_TS], [DEMO_GIND],",
