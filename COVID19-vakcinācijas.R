@@ -37,3 +37,7 @@ ggplot(data = dat.ned, mapping = aes(x = nedela, y = vakc.pers.sk,
 
 ggsave(filename = "COVID19-vakcinacijas.png")
 ggsave(filename = "COVID19-vakcinacijas.pdf")
+
+
+dat[, .(vakc.pers.sk = sum(Vakcinēto.personu.skaits)),
+    keyby = .(Vakcinācijas.posms)]
