@@ -18,26 +18,34 @@ dat[, nedela := ISOweek(Vakcinācijas.datums)]
 
 dat[, .N, keyby = .(Vakcinācijas.posms, Vakcīnas.kārtas.numurs)]
 
-dat.ned <- dat[, .(vakc.pers.sk = sum(Vakcinēto.personu.skaits)),
-               keyby = .(nedela, Vakcinācijas.posms)]
+names(dat)
 
+dat[, Preparāts := gsub("^.* ", "", Preparāts)]
+
+dat[, .N, keyby = .(Preparāts)]
+
+dat.ned <- dat[, .(vakc.pers.sk = sum(Vakcinēto.personu.skaits)),
+               keyby = .(nedela, Preparāts, Vakcinācijas.posms)]
 dat.ned
 
 max(dat$Vakcinācijas.datums)
 
-ggplot(data = dat.ned, mapping = aes(x = nedela, y = vakc.pers.sk,
+pl <- ggplot(data = dat.ned, mapping = aes(x = nedela, y = vakc.pers.sk,
                                             fill = Vakcinācijas.posms)) +
   geom_col(position = position_dodge2(), colour = "black") +
-  scale_y_continuous(name = "vakcinēto personu skaits",
-                     breaks = seq(0, 100e3, by = 1e3)) +
+  scale_y_continuous(name = "vakcinēto personu skaits") +
   scale_x_discrete(name = "nedēļa") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) +
+  facet_wrap(facets = vars(Preparāts)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5),
+        legend.position = "bottom") +
   ggtitle(label = paste0("COVID19 vakcinācijas (", max(dat$Vakcinācijas.datums), ")"),
           subtitle = "https://data.gov.lv/dati/lv/dataset/covid19-vakcinacijas")
 
-ggsave(filename = "COVID19-vakcinacijas.png")
-ggsave(filename = "COVID19-vakcinacijas.pdf")
+ggsave(filename = "COVID19-vakcinacijas.png", plot = pl)
 
+cairo_pdf(filename = "COVID19-vakcinacijas.pdf", width = 16, height = 9)
+pl
+dev.off()
 
 dat[, .(vakc.pers.sk = sum(Vakcinēto.personu.skaits)),
     keyby = .(Vakcinācijas.posms)]

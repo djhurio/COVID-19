@@ -60,7 +60,8 @@ dat[grepl("W99", time)]
 dat <- dat[!grepl("W99", time)]
 
 dat[, y2020 := factor(x = ifelse(year < 2020L, 0, year - 2019L),
-                      levels = 0:2, labels = c("Y<2020", "Y=2020", "Y=2021"))]
+                      levels = 0:3,
+                      labels = c("Y<2020", "Y=2020", "Y=2021", "Y=2022"))]
 dat[, .N, keyby = .(y2020)]
 
 
